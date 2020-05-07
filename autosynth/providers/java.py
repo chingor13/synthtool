@@ -19,6 +19,12 @@ from autosynth import github
 
 
 def list_repositories():
+    return [
+        {"name": "bigquerystorage", "repository": "googleapis/java-bigquerystorage",}
+    ]
+
+
+def list_repositories2():
     gh = github.GitHub(os.environ["GITHUB_TOKEN"])
 
     return _google_cloud_java_repos(gh) + _other_repos(gh)
