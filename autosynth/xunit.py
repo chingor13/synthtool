@@ -12,25 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from synthtool.log import configure_logger
+from autosynth.log import LogCollector
+import jinja2
+
+TEMPLATE_FILE = "report.xml.j2"
 
 
-logger = configure_logger("autosynth")
+def write_xml_log(name: str, log_collector: LogCollector, output_file_path: str):
+    with open(TEMPLATE_FILE) as fh:
+        template = jinja2.Template(fh.read())
 
+    output = template.render(
+        name=name,
+        failures=len([log for log in log_collector.log_entries if not log.success]),
+        log_entries=log_collector.log_entries,
+    )
 
-class LogEntry:
-    def __init__(self, name: str, log: str, success: bool):
-        self.name = name
-        self.log = log
-        self.success = success
-
-
-class LogCollector:
-    def __init__(self):
-        self.log_entries = []
-
-    def add_success(self, name: str, log: str):
-        self.log_entries.append(LogEntry(name, log, True))
-
-    def add_failure(self, name: str, log: str):
-        self.log_entries.append(LogEntry(name, log, False))
+    with open(output_file_path, "w") as fh:
+        fh.write(output)

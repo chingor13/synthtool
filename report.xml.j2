@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<testsuites name="{{name}}" tests="{{results|length}}" failures="{{failures}}" skipped="{{skips}}">
-    {% for result in results %}
-    <testsuite name="{{result.name}}" tests="1" errors="0" failures="{% if result.error %}1{% else %}0{% endif %}" skipped="{% if result.skipped %}1{% else %}0{% endif %}">
-        <testcase classname="{{result.name}}" name="synthesize">
-            {% if result.error %}
-            <failure>{{result.output|e}}</failure>
+<testsuites name="{{name}}" tests="{{log_entries|length}}" failures="{{failures}}">
+    {% for log_entry in log_entries %}
+    <testsuite name="{{log_entry.name}}" tests="1" errors="0" failures="{% if log_entry.success %}0{% else %}1{% endif %}">
+        <testcase classname="{{log_entry.name}}" name="synthesize">
+            {% if log_entry.success %}
+            <system-out>{{log_entry.output|e}}</system-out>
             {% else %}
-            <system-out>{{result.output|e}}</system-out>
+            <failure>{{log_entry.output|e}}</failure>
             {% endif %}
         </testcase>
     </testsuite>

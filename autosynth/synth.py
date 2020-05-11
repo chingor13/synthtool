@@ -620,8 +620,10 @@ def _inner_main(temp_dir: str) -> int:
         # Call the loop.
         commit_count = synthesize_loop(x, multiple_prs, change_pusher, synthesizer)
 
-        failures = len(executor.log_collector.failures)
-        successes = len(executor.log_collector.successes)
+        failures = len(
+            [log for log in executor.log_collector.log_entries if not log.success]
+        )
+        successes = len(executor.log_collector.log_entries) - failures
         logger.info(f"{failures} failures, {successes} successes")
 
         if commit_count == 0:
