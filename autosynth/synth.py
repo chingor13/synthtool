@@ -626,6 +626,7 @@ def _inner_main(temp_dir: str) -> int:
         failures = len([log for log in log_collector.log_entries if not log.success])
         successes = len(executor.log_collector.log_entries) - failures
         logger.info(f"{failures} failures, {successes} successes")
+        logger.info(f"writing xunit log to {base_synth_log_path / 'sponge_log.xml'}")
         xunit.write_xml_log(
             "autosynth.synth", log_collector, base_synth_log_path / "sponge_log.xml"
         )

@@ -4,9 +4,9 @@
     <testsuite name="{{log_entry.name}}" tests="1" errors="0" failures="{% if log_entry.success %}0{% else %}1{% endif %}">
         <testcase classname="{{log_entry.name}}" name="synthesize">
             {% if log_entry.success %}
-            <system-out>{{log_entry.output|e}}</system-out>
+            <system-out>{{log_entry.log|e}}</system-out>
             {% else %}
-            <failure>{{log_entry.output|e}}</failure>
+            <failure>{{log_entry.log|e}}</failure>
             {% endif %}
         </testcase>
     </testsuite>
