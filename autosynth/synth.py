@@ -29,7 +29,7 @@ import synthtool.sources.git as synthtool_git
 
 import autosynth
 import autosynth.flags
-from autosynth import git, git_source, github
+from autosynth import git, git_source, github, xunit
 from autosynth.abstract_source import AbstractSourceVersion
 from autosynth.executor import (
     Executor,
@@ -43,7 +43,7 @@ from autosynth.change_pusher import (
     ChangePusher,
     SquashingChangePusher,
 )
-from autosynth.log import logger
+from autosynth.log import logger, LogCollector
 
 IGNORED_FILE_PATTERNS = [
     # Ignore modifications to synth.metadata in any directory, this still allows *new*
@@ -560,9 +560,12 @@ def _inner_main(temp_dir: str) -> int:
     multiple_commits = flags[autosynth.flags.AUTOSYNTH_MULTIPLE_COMMITS]
     multiple_prs = flags[autosynth.flags.AUTOSYNTH_MULTIPLE_PRS]
 
-    executor: typing.Union[
-        LogCapturingExecutor, LoggingExecutor
-    ] = LogCapturingExecutor() if args.hide_synth_log else LoggingExecutor()
+    log_collector = LogCollector()
+    executor = (
+        LogCapturingExecutor(log_collector)
+        if args.hide_synth_log
+        else LoggingExecutor(log_collector)
+    )
 
     if (not multiple_commits and not multiple_prs) or not metadata:
         if change_pusher.check_if_pr_already_exists(branch):
@@ -620,11 +623,12 @@ def _inner_main(temp_dir: str) -> int:
         # Call the loop.
         commit_count = synthesize_loop(x, multiple_prs, change_pusher, synthesizer)
 
-        failures = len(
-            [log for log in executor.log_collector.log_entries if not log.success]
-        )
+        failures = len([log for log in log_collector.log_entries if not log.success])
         successes = len(executor.log_collector.log_entries) - failures
         logger.info(f"{failures} failures, {successes} successes")
+        xunit.write_xml_log(
+            "autosynth.synth", log_collector, base_synth_log_path / "sponge_log.xml"
+        )
 
         if commit_count == 0:
             logger.info("No changes. :)")

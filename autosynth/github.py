@@ -17,6 +17,8 @@ from typing import Any, Generator, Sequence, Dict, Optional
 import requests
 from autosynth.log import logger
 
+from autosynth.log import logger
+
 _GITHUB_ROOT: str = "https://api.github.com"
 
 
@@ -51,7 +53,7 @@ class GitHub:
         self, repository: str, branch: str, title: str, body: str = None
     ) -> Dict[str, Any]:
         url = f"{_GITHUB_ROOT}/repos/{repository}/pulls"
-        logger.info(f"creating pull request to {repository} for branch {branch}")
+        logger.info(f"creating pull request to: {repository}")
         logger.debug(body)
         response = self.session.post(
             url,
@@ -63,6 +65,7 @@ class GitHub:
                 "maintainer_can_modify": True,
             },
         )
+        logger.debug(response.content.decode("utf-8"))
         response.raise_for_status()
         return response.json()
 

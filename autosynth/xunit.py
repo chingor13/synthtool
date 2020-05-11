@@ -14,8 +14,9 @@
 
 from autosynth.log import LogCollector
 import jinja2
+import os
 
-TEMPLATE_FILE = "report.xml.j2"
+TEMPLATE_FILE = os.path.join(os.path.dirname(__file__), "../report.xml.j2")
 
 
 def write_xml_log(name: str, log_collector: LogCollector, output_file_path: str):
