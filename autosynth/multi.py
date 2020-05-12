@@ -13,7 +13,7 @@ import yaml
 
 from autosynth import github, xunit
 from autosynth.log import logger, LogCollector
-from autosynth.executor import Executor, LogCapturingExecutor
+from autosynth.executor import Executor, LogCapturingExecutor, LoggingExecutor
 
 
 def synthesize_library(library, gh, github_token, extra_args, executor: Executor):
@@ -167,11 +167,13 @@ def main():
 
     log_collector = LogCollector()
     executor = LogCapturingExecutor(log_collector)
+    logging_executor = LoggingExecutor()
 
     for library in config:
         synthesize_library(
             library, gh, args.github_token, args.extra_args[1:], executor
         )
+        logging_executor.execute(["free", "-h"], check=False)
 
     # write out the batch sponge_log.xml file
     xunit.write_xml_log(args.config, log_collector, "sponge_log.xml")
