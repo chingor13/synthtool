@@ -75,20 +75,15 @@ def synthesize_libraries(libraries, github_token, extra_args):
 
 def _format_result(result):
     error = False
-    skipped = False
     returncode = result["result"].returncode
 
     if returncode != 0:
-        if returncode == 28:
-            skipped = True
-        else:
-            error = True
+        error = True
 
     return {
         "name": result["config"]["name"],
         "output": result["result"].stdout,
         "error": error,
-        "skipped": skipped,
     }
 
 
@@ -99,7 +94,6 @@ def make_report(name, results):
     output = template.render(
         name=name,
         failures=len([result for result in results if result["error"]]),
-        skips=len([result for result in results if result["skipped"]]),
         results=results,
     )
 

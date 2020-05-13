@@ -551,7 +551,7 @@ def _inner_main(temp_dir: str) -> int:
 
         if not has_changes():
             logger.info("No changes. :)")
-            sys.exit(28)
+            sys.exit(0)
 
         git.commit_all_changes(pr_title)
         change_pusher.push_changes(1, branch, pr_title, synth_log)
@@ -591,7 +591,7 @@ def _inner_main(temp_dir: str) -> int:
 
         if commit_count == 0:
             logger.info("No changes. :)")
-            sys.exit(28)
+            sys.exit(0)
 
         return commit_count
 
