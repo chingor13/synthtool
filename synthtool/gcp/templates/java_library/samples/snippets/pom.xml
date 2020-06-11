@@ -44,8 +44,8 @@
       <groupId>{{ group_id }}</groupId>
       <artifactId>{{ artifact_id }}</artifactId>
     </dependency>
-    <!-- [END {{metadata['repo']['name']}}_install_with_bom] -->
 
+    <!-- [START_EXCLUDE] -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -58,5 +58,7 @@
       <version>1.0.1</version>
       <scope>test</scope>
     </dependency>
+    <!-- [END_EXCLUDE] -->
   </dependencies>
+  <!-- [END {{metadata['repo']['name']}}_install_with_bom] -->
 </project>
