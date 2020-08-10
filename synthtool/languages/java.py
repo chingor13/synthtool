@@ -324,8 +324,8 @@ def _merge_common_templates(
 
 
 def common_templates(
-    excludes: List[str] = [], template_path: Optional[Path] = None, **kwargs
-) -> None:
+    excludes: List[str] = [], template_path: Optional[Path] = None, copy=True, **kwargs
+) -> Path:
     """Generate common templates for a Java Library
 
     Fetches information about the repository from the .repo-metadata.json file,
@@ -361,4 +361,7 @@ def common_templates(
 
     kwargs["metadata"] = metadata
     templates = gcp.CommonTemplates(template_path=template_path).java_library(**kwargs)
-    s.copy([templates], excludes=excludes, merge=_merge_common_templates)
+    if copy:
+        s.copy([templates], excludes=excludes, merge=_merge_common_templates)
+
+    return templates
